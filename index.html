@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Calculadora de Parámetros Z | Circuitos II</title>
+<meta name="description" content="Calculadora interactiva de parámetros Z para redes de dos puertos: cálculo, gráficos, quiz gamificado y exportación." />
+<meta name="theme-color" content="#0f172a" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>" />
+<link rel="manifest" href="manifest.json" />
+<link rel="stylesheet" href="assets/css/main.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js" defer></script>
+<script type="module" src="assets/js/main.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Saltar al contenido</a>
+
+<header class="topbar">
+  <div class="topbar-brand">
+    <span class="topbar-logo" aria-hidden="true">⚡</span>
+    <div>
+      <p class="topbar-title">Parámetros Z</p>
+      <p class="topbar-subtitle">Calculadora interactiva · Circuitos II</p>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <div class="points-badge" id="points-badge" title="Puntos de gamificación">
+      <span aria-hidden="true">🏆</span>
+      <span id="points-value">0</span> pts
+    </div>
+    <button id="theme-toggle" class="icon-button" type="button" aria-label="Cambiar tema oscuro/claro">
+      <span id="theme-icon" aria-hidden="true">🌙</span>
+    </button>
+  </div>
+</header>
+
+<main id="main-content" class="shell">
+
+  <section class="hero-panel panel" aria-labelledby="hero-heading">
+    <div class="hero-copy">
+      <p class="hero-eyebrow">Laboratorio interactivo</p>
+      <h1 id="hero-heading">Calculadora de parámetros Z</h1>
+      <p class="hero-description">
+        Explora una red de dos puertos con una interfaz más clara, lectura rápida de resultados,
+        gráficos interactivos y herramientas de exportación listas para compartir.
+      </p>
+    </div>
+    <div class="hero-metrics" aria-label="Resumen de funciones">
+      <div class="hero-metric">
+        <span class="hero-metric-value">4</span>
+        <span class="hero-metric-label">parámetros de matriz</span>
+      </div>
+      <div class="hero-metric">
+        <span class="hero-metric-value">5</span>
+        <span class="hero-metric-label">gráficas disponibles</span>
+      </div>
+      <div class="hero-metric">
+        <span class="hero-metric-value">PDF</span>
+        <span class="hero-metric-label">exportación y QR</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTROLES / ENTRADA ============ -->
+  <section class="panel controls" aria-labelledby="controls-heading">
+    <h2 id="controls-heading">Parámetros de entrada</h2>
+
+    <div class="field-row">
+      <label for="preset-select">Preset</label>
+      <select id="preset-select">
+        <option value="">— Personalizado —</option>
+        <option value="bjt">BJT pequeña señal</option>
+        <option value="filtro">Filtro pasa-bajos</option>
+        <option value="ampInv">Amplificador inversor</option>
+      </select>
+    </div>
+
+    <fieldset class="matrix-fieldset">
+      <legend>Matriz [Z] (Ω)</legend>
+      <div class="matrix-inputs">
+        <div class="field-row">
+          <label for="z11">Z11</label>
+          <input id="z11" type="number" step="any" value="1000" inputmode="decimal" />
+          <span class="field-error" id="z11-error" role="alert"></span>
+        </div>
+        <div class="field-row">
+          <label for="z12">Z12</label>
+          <input id="z12" type="number" step="any" value="5" inputmode="decimal" />
+          <span class="field-error" id="z12-error" role="alert"></span>
+        </div>
+        <div class="field-row">
+          <label for="z21">Z21</label>
+          <input id="z21" type="number" step="any" value="80000" inputmode="decimal" />
+          <span class="field-error" id="z21-error" role="alert"></span>
+        </div>
+        <div class="field-row">
+          <label for="z22">Z22</label>
+          <input id="z22" type="number" step="any" value="50000" inputmode="decimal" />
+          <span class="field-error" id="z22-error" role="alert"></span>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="matrix-fieldset">
+      <legend>Corrientes (A)</legend>
+      <div class="field-row">
+        <label for="i1">I1</label>
+        <input id="i1" type="number" step="any" value="0.00002" inputmode="decimal" />
+        <span class="field-error" id="i1-error" role="alert"></span>
+      </div>
+      <div class="field-row">
+        <label for="i2">I2</label>
+        <input id="i2" type="number" step="any" value="-0.0016" inputmode="decimal" />
+        <span class="field-error" id="i2-error" role="alert"></span>
+      </div>
+    </fieldset>
+
+    <div class="button-row">
+      <button id="calculate-btn" class="primary-button" type="button">Calcular</button>
+      <button id="save-preset-btn" class="secondary-button" type="button">Guardar como preset</button>
+    </div>
+
+    <h3 class="section-subheading">Proyectos guardados</h3>
+    <div class="field-row">
+      <input id="project-name" type="text" placeholder="Nombre del proyecto" maxlength="40" />
+      <button id="save-project-btn" class="secondary-button" type="button">Guardar</button>
+    </div>
+    <ul id="projects-list" class="projects-list" aria-live="polite"></ul>
+  </section>
+
+  <!-- ============ RESULTADOS ============ -->
+  <section class="panel results" aria-labelledby="results-heading">
+    <h2 id="results-heading">Resultados</h2>
+
+    <div class="results-grid" id="results-grid"></div>
+
+    <h3 class="section-subheading">Matriz [Z] — mapa de calor</h3>
+    <div class="heatmap" id="heatmap"></div>
+
+    <h3 class="section-subheading">Diagrama esquemático</h3>
+    <div id="schematic-container" class="schematic-container"></div>
+  </section>
+
+  <!-- ============ GRÁFICOS ============ -->
+  <section class="panel charts-panel" aria-labelledby="charts-heading">
+    <div class="chart-head">
+      <h2 id="charts-heading">Visualizaciones</h2>
+      <div class="chart-tabs" id="chart-tabs" role="tablist">
+        <button class="chart-tab active" data-chart="bar" role="tab" aria-selected="true" type="button">Barras</button>
+        <button class="chart-tab" data-chart="line" role="tab" aria-selected="false" type="button">Histórico</button>
+        <button class="chart-tab" data-chart="pie" role="tab" aria-selected="false" type="button">Potencias</button>
+        <button class="chart-tab" data-chart="radar" role="tab" aria-selected="false" type="button">Radar</button>
+        <button class="chart-tab" data-chart="scatter" role="tab" aria-selected="false" type="button">Scatter</button>
+      </div>
+      <div class="chart-actions">
+        <button id="chart-reset-zoom" class="secondary-button small" type="button">Reset zoom</button>
+        <button id="chart-download" class="secondary-button small" type="button">Descargar PNG</button>
+      </div>
+    </div>
+    <div class="chart-canvas-wrap">
+      <canvas id="main-chart" role="img" aria-label="Gráfico de parámetros Z"></canvas>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="panel quiz-panel" aria-labelledby="quiz-heading">
+    <h2 id="quiz-heading">Quiz: adivina el parámetro</h2>
+    <div class="field-row">
+      <label for="quiz-difficulty">Dificultad</label>
+      <select id="quiz-difficulty">
+        <option value="facil">Fácil</option>
+        <option value="medio" selected>Medio</option>
+        <option value="dificil">Difícil</option>
+      </select>
+      <button id="quiz-new-btn" class="secondary-button" type="button">Nuevo problema</button>
+    </div>
+    <div id="quiz-problem" class="quiz-problem" aria-live="polite">Presiona "Nuevo problema" para empezar.</div>
+    <div class="field-row quiz-answer-row">
+      <label for="quiz-answer">Tu respuesta</label>
+      <input id="quiz-answer" type="number" step="any" />
+      <button id="quiz-submit-btn" class="primary-button" type="button">Comprobar</button>
+    </div>
+    <div id="quiz-feedback" class="quiz-feedback" aria-live="polite"></div>
+
+    <h3 class="section-subheading">Medallas</h3>
+    <div id="achievements-grid" class="achievements-grid"></div>
+
+    <h3 class="section-subheading">Tabla de posiciones (local)</h3>
+    <div class="field-row">
+      <input id="leaderboard-name" type="text" placeholder="Tu nombre" maxlength="24" />
+      <button id="leaderboard-save-btn" class="secondary-button" type="button">Guardar puntuación</button>
+      <button id="leaderboard-reset-btn" class="secondary-button danger small" type="button">Reset</button>
+    </div>
+    <ol id="leaderboard-list" class="leaderboard-list"></ol>
+  </section>
+
+  <!-- ============ EXPORTACIÓN ============ -->
+  <section class="panel export-panel" aria-labelledby="export-heading" id="export-panel">
+    <h2 id="export-heading">Compartir y exportar</h2>
+    <div class="button-row">
+      <button id="export-csv-btn" class="secondary-button" type="button">Descargar CSV</button>
+      <button id="export-json-btn" class="secondary-button" type="button">Descargar JSON</button>
+      <button id="export-pdf-btn" class="secondary-button" type="button">Descargar PDF</button>
+      <button id="copy-link-btn" class="secondary-button" type="button">Copiar enlace</button>
+      <button id="show-qr-btn" class="secondary-button" type="button">Mostrar QR</button>
+    </div>
+    <p class="hint">El enlace incluye todos los parámetros en la URL para compartir el cálculo exacto.</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>Calculadora de Parámetros Z · Proyecto académico · 100% client-side, funciona offline tras la primera carga.</p>
+</footer>
+
+<div id="qr-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="qr-modal-title">
+  <div class="modal-content">
+    <div class="modal-head">
+      <h3 id="qr-modal-title">Código QR del enlace</h3>
+      <button id="qr-modal-close" class="icon-button" type="button" aria-label="Cerrar">✕</button>
+    </div>
+    <div id="qr-canvas-container" class="qr-canvas-container"></div>
+    <button id="qr-download-btn" class="secondary-button" type="button">Descargar PNG</button>
+  </div>
+</div>
+
+<div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+<div id="pdf-report" class="pdf-report" aria-hidden="true"></div>
+
+</body>
+</html>
